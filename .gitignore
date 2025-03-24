@@ -12,7 +12,10 @@ dist
 
 # Data
 !**/alpaca-data-conversation.json
-
+coco/
+train2017.zip.1
+train2017.zip
+LLaVA-CC3M-Pretrain-595k/
 # Editor
 .idea
 *.swp
