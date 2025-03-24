@@ -13,6 +13,7 @@ class SeparatorStyle(Enum):
     MPT = auto()
     PLAIN = auto()
     LLAMA_2 = auto()
+    QWEN_2 = auto()
 
 
 @dataclasses.dataclass
@@ -101,6 +102,17 @@ class Conversation:
                     ret += message + seps[i % 2]
                 else:
                     ret += ""
+       
+        elif self.sep_style == SeparatorStyle.QWEN_2:
+            seps = [self.sep, self.sep2]
+            ret = self.system + seps[0]
+            for i, (role, message) in enumerate(messages):
+                if message:
+                    if type(message) is tuple:
+                        message, _, _ = message
+                    ret += role + ": " + message + seps[i % 2]
+                else:
+                    ret += role + ":"
         else:
             raise ValueError(f"Invalid style: {self.sep_style}")
 
@@ -333,6 +345,17 @@ conv_llava_v1 = Conversation(
     sep=" ",
     sep2="</s>",
 )
+conv_qwen_2 = Conversation(
+    system="A chat between a curious user and an artificial intelligence assistant. "
+    "The assistant gives helpful, detailed, and polite answers to the user's questions.",
+    roles=("USER", "ASSISTANT"),
+    version="qwen_v2",
+    messages=(),
+    offset=0,
+    sep_style=SeparatorStyle.QWEN_2,
+    sep="<｜begin▁of▁sentence｜>",
+    sep2= "<｜end▁of▁sentence｜>",
+)
 
 conv_llava_v1_mmtag = Conversation(
     system="A chat between a curious user and an artificial intelligence assistant. "
@@ -369,7 +392,7 @@ Answer the questions.""",
     sep="<|im_end|>",
 )
 
-default_conversation = conv_vicuna_v1
+default_conversation = conv_qwen_2
 conv_templates = {
     "default": conv_vicuna_v0,
     "v0": conv_vicuna_v0,
@@ -387,7 +410,7 @@ conv_templates = {
     "llava_v1": conv_llava_v1,
     "v1_mmtag": conv_llava_v1_mmtag,
     "llava_llama_2": conv_llava_llama_2,
-
+    "qwen_2": conv_qwen_2,
     "mpt": conv_mpt,
 }
 
